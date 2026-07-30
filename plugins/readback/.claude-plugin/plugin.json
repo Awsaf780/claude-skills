@@ -1,0 +1,9 @@
+{
+  "name": "readback",
+  "description": "Forces active engagement with AI output: a real multiple-choice decision before a judgment call gets made on your behalf, and a graded understanding check before a finished deliverable counts as done.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Awsaf Mahmood"
+  },
+  "keywords": ["comprehension", "review", "decision-making", "active-recall"]
+}

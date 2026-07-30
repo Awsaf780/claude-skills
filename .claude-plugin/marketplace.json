@@ -1,0 +1,13 @@
+{
+  "name": "claude-skills",
+  "owner": {
+    "name": "Awsaf Mahmood"
+  },
+  "plugins": [
+    {
+      "name": "readback",
+      "source": "./plugins/readback",
+      "description": "Forces active engagement with AI output: a real multiple-choice decision before a judgment call gets made on your behalf, and a graded understanding check before a finished deliverable counts as done."
+    }
+  ]
+}
