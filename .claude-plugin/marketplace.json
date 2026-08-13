@@ -8,6 +8,11 @@
       "name": "readback",
       "source": "./plugins/readback",
       "description": "Forces active engagement with AI output: a real multiple-choice decision before a judgment call gets made on your behalf, and a graded understanding check before a finished deliverable counts as done."
+    },
+    {
+      "name": "explaining-plainly",
+      "source": "./plugins/explaining-plainly",
+      "description": "Explains code findings, bugs and design tradeoffs in chat the way the reader experiences them rather than the way the code is written: workflow narrative first, code citations as separate evidence, plain-text diagrams for sequences and before/after comparisons."
     }
   ]
 }
