@@ -19,6 +19,7 @@ Update later with `/plugin marketplace update`.
 | Plugin | What it does |
 | --- | --- |
 | [`readback`](plugins/readback) | Forces active engagement with AI output — a real multiple-choice decision before a judgment call gets made on your behalf, and a graded understanding check before a finished deliverable (report, review, feature, resolved conflict) counts as done. Invoke with `/readback` or phrases like "quiz me" / "don't let me off the hook". |
+| [`explaining-plainly`](plugins/explaining-plainly) | Changes how findings get explained in chat — what actually happens, in the order you'd encounter it, instead of a trail of `file:line` citations you can't verify. Code references become separate evidence rather than the spine of the explanation, and sequences or before/after differences get drawn as small plain-text diagrams. Applies to chat only; review reports and plan files stay code-precise. |
 
 ## Contributing
 

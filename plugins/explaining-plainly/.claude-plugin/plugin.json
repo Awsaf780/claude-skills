@@ -1,0 +1,9 @@
+{
+  "name": "explaining-plainly",
+  "description": "Explains code findings, bugs and design tradeoffs in chat the way the reader experiences them rather than the way the code is written: workflow narrative first, code citations as separate evidence, plain-text diagrams for sequences and before/after comparisons.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Awsaf Mahmood"
+  },
+  "keywords": ["explanation", "code-review", "communication", "diagrams", "readability"]
+}
