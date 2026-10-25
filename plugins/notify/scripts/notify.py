@@ -97,7 +97,11 @@ def scan_transcript(path):
             for c in content if isinstance(content, list) else []:
                 if isinstance(c, dict) and c.get("type") == "tool_result" and c.get("tool_use_id") in candidates:
                     text = result_text(c)
-                    if text.startswith("Async agent launched") or "moved to the background" in text:
+                    # Match only the notice itself, at the start, so output that merely quotes
+                    # the phrase (a cat of this file) doesn't count as a background task.
+                    if text.startswith("Async agent launched") or (
+                        text.startswith("Command") and "moved to the background" in text[:200]
+                    ):
                         launched.add(c.get("tool_use_id"))
     return custom or ai, last_text, launched - finished
 
