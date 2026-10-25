@@ -18,6 +18,16 @@
       "name": "notify",
       "source": "./plugins/notify",
       "description": "Desktop and phone notifications when Claude finishes a turn or needs your input. Phone push goes through ntfy, with the full reply, and /notify:setup walks you through subscribing."
+    },
+    {
+      "name": "demo-page",
+      "source": "./plugins/demo-page",
+      "description": "Turns a system, a flow, a piece of work or a comparison into a short, visual one-page artifact you can present in a 5-minute demo, with one thesis, a few sections and only claims backed by what was read."
+    },
+    {
+      "name": "reviewer",
+      "source": "./plugins/reviewer",
+      "description": "A code reviewer for any repository. Reviews a PR, a branch or your working tree, skips what other reviewers already said, checks against what merged into the base and against open PRs, verifies each finding at the PR head, drafts a kind review that is posted only on your go-ahead, and learns from finished PRs."
     }
   ]
 }
