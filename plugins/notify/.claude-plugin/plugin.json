@@ -1,0 +1,9 @@
+{
+  "name": "notify",
+  "description": "Desktop and phone notifications when Claude finishes a turn or needs your input. Phone push goes through ntfy, with the full reply, and /notify:setup walks you through subscribing.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Awsaf Mahmood"
+  },
+  "keywords": ["notifications", "ntfy", "hooks", "phone", "desktop"]
+}

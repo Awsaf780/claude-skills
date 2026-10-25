@@ -13,6 +13,11 @@
       "name": "explaining-plainly",
       "source": "./plugins/explaining-plainly",
       "description": "Explains code findings, bugs and design tradeoffs in chat the way the reader experiences them rather than the way the code is written: workflow narrative first, code citations as separate evidence, plain-text diagrams for sequences and before/after comparisons."
+    },
+    {
+      "name": "notify",
+      "source": "./plugins/notify",
+      "description": "Desktop and phone notifications when Claude finishes a turn or needs your input. Phone push goes through ntfy, with the full reply, and /notify:setup walks you through subscribing."
     }
   ]
 }

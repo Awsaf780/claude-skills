@@ -1,0 +1,40 @@
+{
+  "description": "Desktop and phone (ntfy) notifications when Claude finishes a turn or needs input",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "for p in python3 python py; do \"$p\" -c \"import sys; sys.exit(sys.version_info[0] != 3)\" 2>/dev/null && exec \"$p\" -I \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.py\"; done; exit 0",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "for p in python3 python py; do \"$p\" -c \"import sys; sys.exit(sys.version_info[0] != 3)\" 2>/dev/null && exec \"$p\" -I \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.py\"; done; exit 0",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "for p in python3 python py; do \"$p\" -c \"import sys; sys.exit(sys.version_info[0] != 3)\" 2>/dev/null && exec \"$p\" -I \"${CLAUDE_PLUGIN_ROOT}/scripts/nudge.py\"; done; exit 0",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
