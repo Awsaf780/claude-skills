@@ -56,20 +56,11 @@ def tail_lines(path, max_bytes=2_000_000):
     return data.splitlines()
 
 
-def result_text(block):
-    content = block.get("content")
-    if isinstance(content, str):
-        return content
-    return " ".join(c.get("text", "") for c in content or [] if isinstance(c, dict))
-
-
 def scan_transcript(path):
     """Return (session title, last assistant text, background tasks still running)."""
     custom = ai = last_text = None
-    candidates, launched, finished = set(), set(), set()
+    launched, finished = set(), set()
     for line in tail_lines(path):
-        # Completed, stopped and killed tasks all report back with their launching tool-use id.
-        finished.update(re.findall(r"<tool-use-id>(toolu_\w+)</tool-use-id>", line))
         try:
             entry = json.loads(line)
         except ValueError:
@@ -79,6 +70,10 @@ def scan_transcript(path):
             custom = entry.get("customTitle") or custom
         elif kind == "ai-title":
             ai = entry.get("aiTitle") or ai
+        elif kind == "queue-operation":
+            # Claude Code queues a notice tagged with the launching tool-use id when a
+            # background task completes, stops or is killed.
+            finished.update(re.findall(r"<tool-use-id>(toolu_\w+)</tool-use-id>", entry.get("content") or ""))
         elif kind == "assistant" and not entry.get("isSidechain"):
             content = (entry.get("message") or {}).get("content") or []
             texts = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
@@ -90,18 +85,13 @@ def scan_transcript(path):
                     continue
                 if c.get("name") == "Workflow" or (c.get("input") or {}).get("run_in_background"):
                     launched.add(c.get("id"))
-                elif c.get("name") in ("Agent", "Bash"):
-                    candidates.add(c.get("id"))
         elif kind == "user" and not entry.get("isSidechain"):
-            content = (entry.get("message") or {}).get("content")
-            for c in content if isinstance(content, list) else []:
-                if isinstance(c, dict) and c.get("type") == "tool_result" and c.get("tool_use_id") in candidates:
-                    text = result_text(c)
-                    # Match only the notice itself, at the start, so output that merely quotes
-                    # the phrase (a cat of this file) doesn't count as a background task.
-                    if text.startswith("Async agent launched") or (
-                        text.startswith("Command") and "moved to the background" in text[:200]
-                    ):
+            # Async agents and commands that hit their timeout say so in the result's metadata.
+            result = entry.get("toolUseResult")
+            if isinstance(result, dict) and (result.get("status") == "async_launched" or result.get("backgroundTaskId")):
+                content = (entry.get("message") or {}).get("content")
+                for c in content if isinstance(content, list) else []:
+                    if isinstance(c, dict) and c.get("type") == "tool_result":
                         launched.add(c.get("tool_use_id"))
     return custom or ai, last_text, launched - finished
 
