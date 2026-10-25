@@ -1,0 +1,14 @@
+{
+  "name": "demo-page",
+  "description": "Turns a system, a flow, a piece of work or a comparison into a short, visual one-page artifact you can present in a 5-minute demo, with one thesis, a few sections and only claims backed by what was read.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Awsaf Mahmood"
+  },
+  "keywords": [
+    "demo",
+    "presentation",
+    "artifact",
+    "explainer"
+  ]
+}

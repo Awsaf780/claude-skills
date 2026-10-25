@@ -1,0 +1,314 @@
+<title><!-- the thing's own name --></title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Colour pop: a clean page where every saturated colour means one thing.
+     Blue = guides, coral = checks, mint = you decide, violet = learning, sun = highlights. */
+  :root {
+    --bg: #ffffff;
+    --panel: #f4f5fc;
+    --ink: #15162e;
+    --muted: #5b5d7a;
+    --rule: #dfe2f0;
+    --blue: #2f6bff;
+    --blue-soft: #e6eeff;
+    --coral: #f2463a;
+    --coral-soft: #ffe8e5;
+    --mint: #0ea57a;
+    --mint-soft: #d9f6ec;
+    --violet: #6d4dff;
+    --violet-soft: #ece8ff;
+    --sun: #ffc23d;
+    --sun-soft: #fff3d1;
+    --on-pop: #ffffff;
+    --on-sun: #15162e;
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e0f22; --panel: #171933; --ink: #f2f3ff; --muted: #a3a6c8; --rule: #2e3052;
+      --blue: #6b95ff; --blue-soft: #1b2550;
+      --coral: #ff7a6f; --coral-soft: #3b1e28;
+      --mint: #3ad6a8; --mint-soft: #11372f;
+      --violet: #9d86ff; --violet-soft: #251f4b;
+      --sun: #ffd166; --sun-soft: #3a3120;
+      --on-pop: #0e0f22; --on-sun: #0e0f22;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0f22; --panel: #171933; --ink: #f2f3ff; --muted: #a3a6c8; --rule: #2e3052;
+    --blue: #6b95ff; --blue-soft: #1b2550;
+    --coral: #ff7a6f; --coral-soft: #3b1e28;
+    --mint: #3ad6a8; --mint-soft: #11372f;
+    --violet: #9d86ff; --violet-soft: #251f4b;
+    --sun: #ffd166; --sun-soft: #3a3120;
+    --on-pop: #0e0f22; --on-sun: #0e0f22;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--font-body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; }
+  .page { max-width: 66rem; margin-inline: auto; display: grid; gap: 88px; }
+  section { display: grid; gap: 20px; min-width: 0; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+  h1 { font-size: clamp(2.6rem, 7vw, 4.5rem); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.7rem, 3.6vw, 2.3rem); font-weight: 800; letter-spacing: -0.01em; }
+  h3 { font-size: 1.15rem; font-weight: 700; }
+  p { margin: 0; max-width: 64ch; }
+  a { color: var(--blue); }
+  section > h3 { margin-top: 12px; }
+  code { font: 500 0.86em var(--font-mono); background: var(--panel); padding: 1px 6px; border-radius: 6px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 700 0.78rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .eyebrow::before { content: ""; width: 22px; height: 8px; border-radius: 4px; background: var(--c, var(--violet)); }
+  .hl { background: linear-gradient(transparent 58%, var(--sun) 58% 92%, transparent 92%); padding-inline: 2px; }
+  .intro { color: var(--muted); font-size: 1.08rem; }
+  .blue { --c: var(--blue); --c-soft: var(--blue-soft); }
+  .coral { --c: var(--coral); --c-soft: var(--coral-soft); }
+  .mint { --c: var(--mint); --c-soft: var(--mint-soft); }
+  .violet { --c: var(--violet); --c-soft: var(--violet-soft); }
+  .sun { --c: var(--sun); --c-soft: var(--sun-soft); }
+  /* White text is unreadable on sun, so anything filled with it takes the dark ink. */
+  .sun .tag, .sun .pill, .sun .badge, .sun.figure, .sun .bar span, .gate.sun { color: var(--on-sun); }
+
+  /* Hero */
+  .hero { display: grid; gap: 22px; }
+  .lede { font-size: clamp(1.15rem, 2.4vw, 1.4rem); line-height: 1.45; max-width: 50ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font: 700 0.8rem/1 var(--font-mono); padding: 9px 13px; border-radius: 999px; background: var(--c-soft); color: var(--c); }
+
+  /* Workflow, built from boxes so it fills the width and wraps instead of scrolling */
+  .workflow { display: grid; gap: 12px; }
+  .band { border-radius: 20px; padding: 20px 22px; background: var(--c-soft); display: grid; gap: 14px; }
+  .band-title { font: 700 0.8rem/1 var(--font-mono); letter-spacing: 0.1em; color: var(--c); }
+  .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill { background: var(--c); color: var(--on-pop); font-weight: 700; padding: 10px 16px; border-radius: 999px; }
+  .band-note { color: var(--muted); font-size: 0.95rem; }
+  .stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 12px; }
+  .stage { background: var(--ink); color: var(--bg); border-radius: 18px; padding: 18px 16px; display: grid; gap: 8px; align-content: start; }
+  .stage .num { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--sun); color: var(--on-sun); font: 700 0.85rem var(--font-mono); }
+  .stage .name { font: 800 1.35rem/1.1 var(--font-display); }
+  .stage .cmd { font: 500 0.76rem var(--font-mono); opacity: 0.75; }
+  .stage .does { font-size: 0.92rem; line-height: 1.4; opacity: 0.9; }
+  .gate { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--mint); color: var(--on-pop); font-weight: 700; font-size: 0.82rem; }
+  .gate.sun { background: var(--sun); }
+  .stage code { background: transparent; color: inherit; padding: 0; }
+  .gate svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 14px; }
+  .fact { background: var(--panel); border-radius: 18px; padding: 20px; display: grid; gap: 10px; align-content: start; }
+  .fact h3 { display: flex; align-items: center; gap: 10px; }
+  .fact h3::before { content: ""; width: 12px; height: 12px; border-radius: 4px; background: var(--c); }
+  .fact p, .fact li { color: var(--muted); font-size: 0.98rem; }
+  .fact ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 4px; }
+  .agents { display: flex; flex-wrap: wrap; gap: 6px; }
+  .agent { font: 700 0.75rem/1 var(--font-mono); padding: 7px 10px; border-radius: 999px; background: var(--c-soft); color: var(--c); }
+
+  /* Guide vs sensor */
+  .versus { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 16px; }
+  .side { border-radius: 20px; padding: 26px; display: grid; gap: 12px; align-content: start; background: var(--c-soft); }
+  .tag { justify-self: start; font: 700 0.75rem/1 var(--font-mono); letter-spacing: 0.1em; padding: 7px 11px; border-radius: 999px; background: var(--c); color: var(--on-pop); }
+  .side .big { font: 800 1.6rem/1.15 var(--font-display); color: var(--c); }
+  .side .then { font-weight: 700; font-size: 1.1rem; }
+  .side ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+
+  /* Big figures */
+  .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 10px; }
+  .stat { background: var(--panel); border-radius: 16px; padding: 16px; display: grid; gap: 4px; }
+  .stat .n { font: 800 2rem/1 var(--font-display); color: var(--violet); font-variant-numeric: tabular-nums; }
+  .stat .l { color: var(--muted); font-size: 0.9rem; line-height: 1.3; }
+
+  /* Ladder */
+  .ladder { background: var(--panel); border-radius: 20px; padding: 26px; display: grid; gap: 16px; }
+  .ladder p { color: var(--muted); }
+  .rungs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; align-items: end; height: 190px; }
+  .rung { border-radius: 12px 12px 4px 4px; background: var(--c); height: var(--h); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; }
+  .rung span { font: 700 0.75rem/1.1 var(--font-mono); color: var(--on-pop); text-align: center; padding-inline: 4px; }
+  .rung.soft { background: var(--c-soft); }
+  .rung.soft span { color: var(--c); }
+  .ladder-axis { display: flex; justify-content: space-between; gap: 12px; font: 700 0.78rem var(--font-mono); color: var(--muted); }
+
+  /* Tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 14px; }
+  .tile { background: var(--panel); border-radius: 18px; padding: 22px; display: grid; gap: 12px; align-content: start; }
+  .tile-head { display: flex; align-items: center; gap: 12px; }
+  .badge { flex: none; width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; background: var(--c); color: var(--on-pop); }
+  .badge svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ba { display: grid; gap: 8px; }
+  .ba div { display: grid; grid-template-columns: 4.2rem 1fr; gap: 10px; align-items: baseline; }
+  .ba div > * { min-width: 0; }
+  .ba .k { font: 700 0.68rem/1.6 var(--font-mono); letter-spacing: 0.08em; text-align: center; border-radius: 999px; padding-inline: 6px; }
+  .ba .was .k { background: var(--rule); color: var(--muted); }
+  .ba .now .k { background: var(--c); color: var(--on-pop); }
+  .ba .was span:last-child { color: var(--muted); }
+  .tile.off { background: transparent; border: 2px dashed var(--rule); }
+  .tile.off h3 { color: var(--muted); }
+  .tile.off p { color: var(--muted); }
+  .not-now { justify-self: start; font: 700 0.7rem/1 var(--font-mono); letter-spacing: 0.08em; padding: 6px 9px; border-radius: 999px; background: var(--sun); color: var(--on-sun); }
+
+  /* Figures and the cost comparison */
+  .figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 14px; }
+  .figure { border-radius: 20px; padding: 24px; background: var(--c); color: var(--on-pop); display: grid; gap: 6px; align-content: start; }
+  .figure .n { font: 800 3.2rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .figure .l { font-weight: 600; line-height: 1.35; }
+  .compare { background: var(--panel); border-radius: 20px; padding: 24px; display: grid; gap: 14px; }
+  .compare p { color: var(--muted); font-size: 0.98rem; }
+  .bar-row { display: grid; grid-template-columns: 9rem 1fr; gap: 12px; align-items: center; }
+  .bar-row > * { min-width: 0; }
+  .bar-label { font-weight: 700; font-size: 0.95rem; }
+  .bar { height: 34px; border-radius: 10px; background: var(--c); width: var(--w); display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; min-width: 4.5rem; }
+  .bar span { font: 700 0.85rem var(--font-mono); color: var(--on-pop); }
+  .note { color: var(--muted); }
+  .next { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-weight: 600; }
+  .step { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px 9px 9px; border-radius: 999px; background: var(--panel); }
+  .step b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--violet); color: var(--on-pop); font: 700 0.75rem var(--font-mono); }
+
+  /* Matrix: who can do what, often before and after a change. Scrolls inside its own box on a phone. */
+  .matrix-wrap { overflow-x: auto; background: var(--panel); border-radius: 20px; padding: 8px 18px 14px; }
+  .matrix { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .matrix caption { text-align: left; font: 700 0.78rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 12px 0; }
+  .matrix th, .matrix td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  .matrix tbody tr:last-child th, .matrix tbody tr:last-child td { border-bottom: 0; }
+  .matrix small { color: var(--muted); font-weight: 400; }
+  .matrix .p { display: inline-block; font: 700 0.75rem/1 var(--font-mono); padding: 6px 9px; border-radius: 999px; background: var(--c, var(--bg)); color: var(--on-pop); }
+  .matrix .p.no { background: var(--bg); color: var(--muted); }
+
+  /* Commands */
+  .cmds { display: grid; gap: 0; border-radius: 18px; overflow: hidden; background: var(--panel); }
+  .cmd-row { display: grid; grid-template-columns: minmax(0, 20rem) 1fr; gap: 6px 20px; padding: 16px 20px; border-bottom: 1px solid var(--rule); }
+  .cmd-row:last-child { border-bottom: 0; }
+  .cmd-row > * { min-width: 0; }
+  .cmd-row code { background: var(--bg); justify-self: start; overflow-wrap: anywhere; }
+  .cmd-row span { color: var(--muted); }
+
+  @media (max-width: 600px) {
+    .rungs { height: 160px; gap: 6px; }
+    .rung span { font-size: 0.6rem; }
+    .cmd-row, .bar-row { grid-template-columns: 1fr; }
+  }
+  /* Only when a diagram is needed and boxes can't show it: an inline SVG that scales, never scrolls. */
+  .figure-svg { background: var(--panel); border-radius: 20px; padding: 18px; }
+  .figure-svg svg { display: block; width: 100%; height: auto; }
+  .figure-svg text { fill: var(--ink); font-family: var(--font-body); }
+  .unconfirmed { stroke-dasharray: 5 4; }
+</style>
+
+<!-- Components to pick from. Keep the ones the topic needs, delete the rest. Colours carry meaning:
+     give each colour class (blue, coral, mint, violet, sun) one meaning for the whole page, and say it. -->
+<main class="page">
+  <header class="hero">
+    <span class="eyebrow violet"><!-- the area this belongs to --></span>
+    <h1><!-- the thing's name, with one word in <span class="hl"> --></h1>
+    <p class="lede"><!-- the thesis: what this is and why it matters, one or two sentences --></p>
+    <div class="chips">
+      <span class="chip blue"><!-- a fact --></span>
+      <span class="chip coral"><!-- a fact --></span>
+    </div>
+  </header>
+
+  <!-- FLOW: steps in order, with what steers and checks them. Wraps on narrow screens, never scrolls. -->
+  <section aria-labelledby="flow">
+    <span class="eyebrow blue"><!-- the question --></span>
+    <h2 id="flow"><!-- the claim --></h2>
+    <div class="workflow">
+      <div class="band blue">
+        <span class="band-title"><!-- WHAT STEERS IT --></span>
+        <div class="pills"><span class="pill"><!-- item --></span></div>
+      </div>
+      <ol class="stages">
+        <li class="stage"><span class="num">1</span><span class="name"><!-- step --></span><span class="cmd"><!-- detail --></span></li>
+        <li class="stage"><span class="num">2</span><span class="name"><!-- step --></span><span class="cmd"><!-- detail --></span><span class="gate"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><!-- a person decides --></span></li>
+      </ol>
+      <div class="band coral">
+        <span class="band-title"><!-- WHAT CHECKS IT --></span>
+        <div class="pills"><span class="pill"><!-- item --></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FACTS: two or three cards of detail under a visual: who's involved, rules that always hold, how it scales. -->
+  <!-- <div class="facts"><div class="fact violet"><h3>…</h3><p>…</p><div class="agents"><span class="agent blue">…</span></div></div></div> -->
+
+  <!-- STRIP: a row of small numbers that make a comparison concrete. -->
+  <!-- <div class="strip"><div class="stat"><span class="n">27</span><span class="l">what it counts</span></div></div> -->
+
+  <!-- VERSUS: two ideas side by side. -->
+  <section aria-labelledby="idea">
+    <span class="eyebrow violet"><!-- the key idea --></span>
+    <h2 id="idea"><!-- the idea in a few words --></h2>
+    <div class="versus">
+      <div class="side blue"><span class="tag"><!-- A --></span><span class="big"><!-- what it does --></span><span class="then"><!-- the catch --></span></div>
+      <div class="side coral"><span class="tag"><!-- B --></span><span class="big"><!-- what it does --></span><span class="then"><!-- the catch --></span></div>
+    </div>
+    <!-- LADDER: a scale from weakest to strongest; set each rung's --h. -->
+    <div class="ladder">
+      <h3><!-- what climbs --></h3>
+      <div class="rungs" role="img" aria-label="<!-- the scale in words -->">
+        <div class="rung soft blue" style="--h:35%"><span><!-- weakest --></span></div>
+        <div class="rung blue" style="--h:65%"><span><!-- middle --></span></div>
+        <div class="rung coral" style="--h:100%"><span><!-- strongest --></span></div>
+      </div>
+      <div class="ladder-axis"><span><!-- low end --></span><span><!-- high end --></span></div>
+    </div>
+  </section>
+
+  <!-- TILES: what changed, one icon badge each; tile.off for what was left out. -->
+  <section aria-labelledby="took">
+    <span class="eyebrow coral"><!-- what changed --></span>
+    <h2 id="took"><!-- the headline --></h2>
+    <div class="tiles">
+      <div class="tile coral">
+        <span class="badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span>
+        <h3><!-- short name --></h3>
+        <p><!-- one plain sentence --></p>
+      </div>
+      <!-- A change reads best as before and now: -->
+      <div class="tile blue">
+        <div class="tile-head"><span class="badge"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span><h3><!-- short name --></h3></div>
+        <div class="ba">
+          <div class="was"><span class="k">BEFORE</span><span><!-- how it was --></span></div>
+          <div class="now"><span class="k">NOW</span><span><!-- how it is --></span></div>
+        </div>
+      </div>
+      <div class="tile off">
+        <span class="not-now">NOT NOW</span>
+        <h3><!-- what was left out --></h3>
+        <p><!-- why, in one sentence --></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIGURES: two to four numbers, each with its source in the label; then what's next. -->
+  <section aria-labelledby="where">
+    <span class="eyebrow mint"><!-- where it stands --></span>
+    <h2 id="where"><!-- the headline --></h2>
+    <div class="figures">
+      <div class="figure blue"><span class="n"><!-- number --></span><span class="l"><!-- what it counts, and its source --></span></div>
+    </div>
+    <p class="note"><!-- what the numbers don't show --></p>
+    <!-- COMPARE: one measured change as bars; set --w as a share of the largest. -->
+    <div class="compare">
+      <h3><!-- what was measured, and where --></h3>
+      <div class="bar-row coral"><span class="bar-label">Before</span><div class="bar" style="--w:100%"><span><!-- value --></span></div></div>
+      <div class="bar-row mint"><span class="bar-label">After</span><div class="bar" style="--w:40%"><span><!-- value --></span></div></div>
+      <p><!-- what the numbers don't show --></p>
+    </div>
+    <div class="next"><span class="step"><b>1</b><!-- next step --></span></div>
+  </section>
+  <!-- MATRIX: who or what can do which thing; rows often "X, before" and "X, now". Colour each cell's .p by meaning. -->
+  <!-- <div class="matrix-wrap"><table class="matrix"><caption>…</caption>
+       <thead><tr><th scope="col">Who</th><th scope="col">Action<br><small>what it means</small></th></tr></thead>
+       <tbody><tr><th scope="row">… before</th><td><span class="p coral">Possible</span></td></tr>
+              <tr><th scope="row">… now</th><td><span class="p no">Denied</span></td></tr></tbody></table></div> -->
+
+  <!-- COMMANDS: how the audience tries it themselves. -->
+  <section aria-labelledby="try">
+    <span class="eyebrow blue">Commands to know</span>
+    <h2 id="try"><!-- e.g. Try it on your next ticket --></h2>
+    <div class="cmds">
+      <div class="cmd-row"><code><!-- command --></code><span><!-- what it does --></span></div>
+    </div>
+  </section>
+</main>
