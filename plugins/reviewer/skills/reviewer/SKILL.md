@@ -10,6 +10,7 @@ Review a change the way a careful teammate would: find what would break, prove i
 
 - [references/checklists.md](references/checklists.md): what to look for, by area, each item learned from a real review.
 - [references/voice.md](references/voice.md): how findings are worded, scored and posted.
+- [references/templates.md](references/templates.md): the briefs and answer formats for area reviewers and the author's advocate.
 - `~/.claude/reviewer/lessons.md`: what your later reviews taught; read it every time, and add to it in step 9. If it doesn't exist yet, copy [lessons-template.md](lessons-template.md) there first.
 - `~/.claude/reviewer/checklists.md`: your own checklist items, promoted from lessons in step 9. Read it with the built-in checklists when it exists.
 - `~/.claude/reviewer/repos/<owner>__<repo>.md`: your notes for one repository, when a file for it exists (where its clone and lessons live, base branch, who reviews what).
@@ -65,7 +66,7 @@ Cite a rule by its ID or file when you rely on it. When code and a written rule 
 Size the work first (`files.txt`, skipping lockfiles and generated files):
 
 - **Up to about 1,500 changed lines:** review it yourself, in this context. No subagents.
-- **Larger, or spread over several packages:** one `general-purpose` agent with `model: sonnet` per package or area, each given its file list, the diff path, the checklist sections for its area and this step's rules, plus one integration pass of your own over what crosses packages. Use an `Explore` agent for wide "where else is this used" searches. Don't spawn more than four.
+- **Larger, or spread over several packages:** one `general-purpose` agent with `model: sonnet` per package or area, never per category: each walks every checklist section that matches its files, so no file is read twice. Brief each with the area reviewer brief in [references/templates.md](references/templates.md); it answers in that format, with quoted lines for every finding. Add one integration pass of your own over what crosses packages, the merge with the base and the ticket: the worst findings sit between areas. Use an `Explore` agent for wide "where else is this used" searches. Don't spawn more than four area agents.
 - `quick`: blockers and majors only, and no agents.
 
 Walk the sections of [references/checklists.md](references/checklists.md) that match the diff: **Regressions** and **Craft** always; **Backend**, **Data**, **Frontend**, **Security**, **AWS and CDK**, **CI and supply chain**, **Tests** and **Docs and ADRs** when the diff has them. Then the techniques that find the findings that matter:
@@ -92,6 +93,8 @@ Before a finding goes in the report:
 - Try to disprove it: look for the guard, test, middleware or ADR rule that makes it moot. If the disproof wins, drop it.
 - Mark it **introduced** or **pre-existing**. A pre-existing problem is reported separately and never blamed on the PR.
 - If it can't be shown without running something, say what would confirm it and score it lower; don't present it as fact.
+
+Then hear the other side. Once your own checks are done, one `general-purpose` agent acts as the **author's advocate** for every finding scored 5 and up: like a defence lawyer, it makes the strongest honest case that each one is wrong, already handled, out of scope or overstated. Brief it with the advocate brief in [references/templates.md](references/templates.md): the claims, the review folder and the merged tree, never your reasoning. You are the judge: read every line it cites, drop or lower what its defence wins, and note its verdict under each finding in the report. In `quick` mode, argue the author's side yourself in two or three sentences per finding instead.
 
 The user will ask "are you 100% sure?". Be able to say yes for every finding you post.
 
