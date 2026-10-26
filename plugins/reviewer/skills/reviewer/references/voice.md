@@ -28,6 +28,7 @@ Good review comments share a shape:
 Rules:
 
 - **Respectful, never aggressive.** Assume the author had a reason. "I think this can...", "Could we...?", "Maybe X would fit better?", "Isn't X ...?" are the house style. No "obviously", "wrong", "should have", no exclamation marks.
+- **Short.** Two to four sentences: what happens, why it matters if that isn't obvious, the ask. The long form is for a blocker that needs it, and even then a short paragraph or two.
 - **Only what matters, concisely.** No praise padding, no restating the PR, no "great work, but". A thanks or a "good catch" in a reply is fine.
 - **One point per comment.** A bold title only on long, important ones.
 - **Mark the weight.** Start a nit with `**Nit:**`; end an optional one with "Not blocking." Blockers say what breaks after merge or deploy.
@@ -60,9 +61,11 @@ A nit:
 
 ## The review body
 
-One to three sentences: what blocks the merge, and anything that applies to the whole PR (a rebase, a deploy order). Then, if you chose to include them, a short "Not blocking" list. Example:
+One plain, friendly line that sets the scene; the inline comments carry everything else. Example:
 
-> Requesting changes for two things before merge: the permissions boundary on dev doesn't allow `AssumeRole` yet (inline on `data-access-role.ts`), and the branch needs a rebase onto dev, where 16 files conflict after two recent merges.
+> Looks like dev branch has moved on quite a bit since the last merge. Some small feedback:
+
+Add a second sentence only for something that applies to the whole PR and sits on no diff line, such as a deploy order. No list of findings, no "Not blocking" list: those go inline.
 
 ## Replies on your own PR
 
