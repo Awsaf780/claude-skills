@@ -1,7 +1,7 @@
 {
   "name": "reviewer",
   "description": "A code reviewer for any repository. Reviews a PR, a branch or your working tree, skips what other reviewers already said, checks against what merged into the base and against open PRs, verifies each finding at the PR head, drafts a kind review that is posted only on your go-ahead, and learns from finished PRs.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Awsaf Mahmood"
   },

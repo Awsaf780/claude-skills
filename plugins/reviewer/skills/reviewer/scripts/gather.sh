@@ -63,8 +63,11 @@ gh pr checks "$n" -R "$repo" > checks.txt 2>&1 || true
 while read -r t; do
   r="${t%#*}"; i="${t#*#}"
   if [[ "$r" == "$repo" && "$i" == "$n" ]]; then continue; fi
-  gh issue view "$i" -R "$r" --json title,state,body,url \
-    --jq '"\n# \(.url) [\(.state)] \(.title)\n\(.body)"' >> tickets.md 2>/dev/null || true
+  # The comments matter as much as the body: owners often change a criterion in a comment.
+  gh issue view "$i" -R "$r" --json title,state,body,url,comments \
+    --jq '"\n# \(.url) [\(.state)] \(.title)\n\(.body)" + (if (.comments | length) > 0
+      then "\n\n## Comments on this ticket\n" + ([.comments[] | "\n### \(.author.login) \(.createdAt)\n\(.body)"] | join("\n"))
+      else "" end)' >> tickets.md 2>/dev/null || true
 done < linked.txt
 
 # Open PRs that touch the same files can conflict with, or depend on, this one.
@@ -100,13 +103,19 @@ if [[ -n "$clone" ]]; then
     git -C "$dir/head" checkout -q --detach "$head_sha"
   fi
   mb=$(git -C "$clone" merge-base "origin/$base" "$head_sha")
+  # A dry-run merge: the first line is the tree the merge would produce (conflict markers
+  # included), then the conflicting files. Nothing in the clone changes.
+  merged=$(git -C "$clone" merge-tree --write-tree --name-only "origin/$base" "$head_sha" 2>/dev/null || true)
+  head -1 <<<"$merged" > merge-tree.txt
   {
     echo "# Commits on $base since this branch was cut ($(git -C "$clone" rev-list --count "$mb..origin/$base") total)"
     git -C "$clone" log --oneline "$mb..origin/$base" | head -40
     echo; echo "# Of those, touching files this PR changes"
     git -C "$clone" log --oneline "$mb..origin/$base" -- $(cut -d' ' -f3- files.txt) | head -40
     echo; echo "# Files that would conflict on merge"
-    git -C "$clone" merge-tree --write-tree --name-only "origin/$base" "$head_sha" 2>/dev/null | tail -n +2 | sed '/^$/,$d' || true
+    tail -n +2 <<<"$merged" | sed '/^$/,$d'
+    echo; echo "# Read a file as it would be after the merge"
+    echo "git -C $clone show $(cat merge-tree.txt):<path>"
   } > base-drift.md
 else
   echo "no local clone of $repo found; read files with: gh api repos/$repo/contents/<path>?ref=$head_sha" > base-drift.md

@@ -37,7 +37,7 @@ bash <skill-dir>/scripts/gather.sh <pr-ref>
 
 `<skill-dir>` is the base directory Claude Code shows when it loads this skill. The script needs `gh` (signed in) and `jq`, and looks for a local clone in the current directory and under `~/Workspace`, `~/code`, `~/src` and `~/projects` (set `REVIEWER_CLONE_DIRS` to a space-separated list to change that).
 
-Read `pr.json`, `files.txt`, `comments.md`, `base-drift.md`, `overlapping-prs.txt`, `tickets.md` and `checks.txt`. Read the code at `head/` (the PR head), never the user's checkout: their branch may be anything. If there is no local clone, read files with `gh api repos/<repo>/contents/<path>?ref=<head>`.
+Read `pr.json`, `files.txt`, `comments.md`, `base-drift.md`, `overlapping-prs.txt`, `tickets.md` (each ticket with its comments) and `checks.txt`. `merge-tree.txt` holds the tree a merge with the base would produce; `base-drift.md` shows how to read a file from it. Read the code at `head/` (the PR head), never the user's checkout: their branch may be anything. If there is no local clone, read files with `gh api repos/<repo>/contents/<path>?ref=<head>`.
 
 For a branch, use `git merge-base`, `git diff <base>...HEAD`, `git status` and `git diff` in the current repo. Find its PR with `gh pr view` if one exists; if so, treat it as that PR.
 
@@ -58,7 +58,7 @@ Cite a rule by its ID or file when you rely on it. When code and a written rule 
 - **Existing comments.** List every point other reviewers raised and how the author answered. Don't repeat any of them. You may build on one (a case they missed, a better fix), and then say so: "On top of Sam's comment on `client.ts:18`...". An outdated thread whose code is gone is closed.
 - **Base drift.** If the base gained commits since the branch was cut, read the ones touching the same files or the same concepts. They can make a finding moot, make a new one (a removed file, a changed shared helper, a boundary that now forbids what the PR needs), or force a rebase. Say how many files conflict.
 - **Open PRs.** For each overlapping PR, check whether the two agree: a shared helper, a metric's dimensions, an ADR number, an IAM boundary, a contract. Whichever merges second has to adapt; say which change is needed.
-- **The ticket.** Does the change do what the ticket and the PR description say? A claim in the description that the code doesn't back ("e2e passes", "URL unchanged", "data stays protected") is a finding.
+- **The ticket.** Read its comment thread as well as its body: an owner often adds or rewrites an acceptance criterion in a comment, sometimes after the author's last push. Does the change do what the ticket and the PR description say? A claim in the description that the code doesn't back ("e2e passes", "URL unchanged", "data stays protected") is a finding.
 
 ## 4. Review
 
@@ -83,9 +83,12 @@ CI: read `checks.txt`. A red check is a finding only when this PR caused it; say
 
 ## 5. Verify every finding
 
+Steps 1 to 3 are done in full before any verdict or finding reaches the user, ticket comments included. A finding said once and withdrawn a turn later costs more trust than the finding was worth.
+
 Before a finding goes in the report:
 
-- Read the lines it rests on at the PR head, yourself, not through an agent's summary.
+- Read the lines it rests on at the PR head, yourself, not through an agent's summary. Do it again when you write the report, even for a finding your earlier notes or a context summary call verified: a note is not proof.
+- A finding about what happens after the merge is checked against the merged result (`git show <merge-tree>:<path>`), or against all three sides: the merge base, the base and the head. Reading only the base's side misses that the PR already changed the same lines.
 - Try to disprove it: look for the guard, test, middleware or ADR rule that makes it moot. If the disproof wins, drop it.
 - Mark it **introduced** or **pre-existing**. A pre-existing problem is reported separately and never blamed on the PR.
 - If it can't be shown without running something, say what would confirm it and score it lower; don't present it as fact.
@@ -106,12 +109,13 @@ Then tell the user in chat, written plainly for a person: verdict first, then th
 
 ## 7. Draft the review
 
-For someone else's PR, draft it in chat; never post yet. Start with one line naming the audience (the PR author and reviewers). Follow [references/voice.md](references/voice.md):
+For someone else's PR, draft it in chat; never post yet. Start with one line naming the audience (the PR author and reviewers), then show the draft exactly as it will appear on GitHub: the body, then each inline comment under its `file:line`. Follow [references/voice.md](references/voice.md):
 
-- A short body: what blocks the merge, in one to three sentences. No praise padding, no summary of the PR.
-- Inline comments for blockers and majors, in priority order, each on a line that is inside the diff.
-- Minors and nits: either a short list in the body marked "not blocking", or left out. Say which you chose, and list what you left out under "Left out" in chat so the user can pull any back in.
-- Event: `REQUEST_CHANGES` when there is anything to fix. When there is nothing, offer `APPROVE`.
+- The body is one plain, friendly line. No praise padding, no summary of the PR, no list of findings.
+- Every finding is an inline comment, in priority order, on a line inside the diff. Minors and nits go inline too, marked "Not blocking." Only a point about a line the PR didn't touch goes in the body.
+- Polite and concise: two to four sentences per comment. Nobody reads an essay in a review.
+- Anything you chose not to post goes under "Left out" in chat, so the user can pull it back in.
+- Event: `REQUEST_CHANGES` when there is anything to fix, `APPROVE` when there is nothing and the user agrees. Never `COMMENT`, and no standalone comments outside the review.
 
 Wait for the user. They will edit, cut or reorder; apply exactly that.
 
