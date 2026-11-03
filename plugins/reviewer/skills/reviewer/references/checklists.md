@@ -113,6 +113,10 @@ What to look for, by area. Every item came from a real review. They are examples
 - **Diffing two checkouts**: each side installs its own dependencies, or a bump shows on neither; asset hashes are masked only where they sit.
 - **CI scripts that report**: failure state per producer, and every returned error reaches an output; an error excerpt keeps the start, where the message is; a fallback after a missing artifact says the job did not run, not that the PR failed.
 - **New dependencies**: maintainer, usage, name near-misses, install scripts, and whether a smaller existing one does it.
+- **"Green in CI, red in the pipeline"**: list every difference between the two before trusting a CI pass. That means the entry command, runtime versions (a pinned version file vs a build image's major), the install command, Docker availability, and the host sandbox. A tool that hooks into child processes (file trackers, `LD_PRELOAD`, seccomp) can break statically linked binaries such as esbuild, Go linters or the docker CLI only on the stricter host.
+- **Reproducing a failure that only happens on the build host**: a plain container usually passes. A container whose seccomp profile refuses the syscall the tool needs (e.g. `seccomp` with `errnoRet: 22`) can reproduce it. Prove the reproduction fails with the same error before testing the fix in it.
+- **Skips decided by a side effect**: a test that skips when a tool "looks unavailable" (`docker info` fails) turns into a failure the day the tool starts working. Ask for an explicit condition such as the environment (`CODEBUILD_BUILD_ID`, `GITHUB_ACTIONS`), and make the side where the test is required fail loudly.
+- **Recurring pipeline failures**: a third patch for the same class (per-step cache or tracking switches, say) asks for a class-wide switch plus a guard test.
 
 ## Tests
 

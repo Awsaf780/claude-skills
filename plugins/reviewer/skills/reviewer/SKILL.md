@@ -80,7 +80,21 @@ Walk the sections of [references/checklists.md](references/checklists.md) that m
 7. **Ask what it can't see.** For anything that reports a verdict (a diff, a check, a scanner, an alarm), list what it skips, fakes or masks: builds, bundling, env, context, hashed values. Trace each into the code whose output depends on it. A thing missing on both sides of a comparison reads as "no changes", and the tests usually assert the clean case.
 8. **Run it against the base as it is today.** A fix, script or check that the other side has to know about (a diff's base branch, an old client, a stack deployed before this change) must work when that side doesn't have it yet.
 
+9. **Ask what the old behaviour was hiding.** When a change removes, disables or works around something that was breaking things (a tracker, a sandbox, a cache, a retry, a feature flag), list everything else that mechanism touched, not only the step that failed. Then read the last passing run's log for every `skip`, `Skipping`, warning and "not available" line. A side effect may have been doing the work of a rule, and it is about to stop. Example: a file tracker broke `docker info`, so a test suite skipped itself in the release build. Removing the tracker turned the skip into a failure.
+
 CI: read `checks.txt`. A red check is a finding only when this PR caused it; say whether it did. Don't run the suite for someone else's PR unless the user asks or a finding depends on it.
+
+### When the PR fixes a failing build or deploy
+
+The question behind the review is "will the pipeline go green after this merges?" A review can prove the targeted step passes and still miss that question. Do all of these:
+
+1. **Read the failure's own log**, not the PR's summary of it. Note the exact error line, which command ran, and which steps ran before it.
+2. **Read the pipeline's recent history.** List the last 10 to 20 runs and the cause of each failure. If this is the second or third patch for the same class, the review asks for the fix to cover the class (one switch, plus a test that keeps it), not this instance.
+3. **Reproduce the failure first, then the fix.** Build a model of the failing environment and make it fail with the same error before trying the fix in it. The environment that passed CI usually passes the old code too, so a pass there proves nothing.
+4. **Run the whole pipeline command in the reproduction**, not only the step that failed. The steps are usually chained with `&&`, so a later step has never run in the failing environment.
+5. **Run technique 9** on the last passing log.
+6. **Word the verdict precisely.** Say what is proven ("the build step passes in a reproduction of the failure") and what is not ("not yet run in the real pipeline"). Name the first real run as the proof, and offer to watch it. Never write "this will fix the build" from a partial run.
+7. **When the run comes back, read which steps ran.** A step passed only if its own success line is in the log. If it is absent, an earlier step failed and it never ran. Don't report a step as passing because the error moved elsewhere.
 
 ## 5. Verify every finding
 
@@ -109,6 +123,8 @@ Write `report.md` in the review folder, code-precise, for later learning:
 - Not checked: what you didn't run or couldn't see (screenshots behind GitHub auth, a deploy, Windows).
 
 Then tell the user in chat, written plainly for a person: verdict first, then the findings that matter in plain words (what happens, when, why it matters), IDs and `file:line` last under **Where**. Mention what you dropped as duplicates in one line. Point at the report path.
+
+Chat layout: keep it short, and never write a wall of text. Use a table only for steps, a comparison or several parallel items, and give it a "Details" column of one or two plain sentences, so each row reads on its own. Write general statements and short answers as plain sentences. A `───` divider can separate the verdict, the findings and the next steps. For a runtime claim, say what was proven, where it was proven, and what is still unproven.
 
 ## 7. Draft the review
 
