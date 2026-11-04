@@ -16,6 +16,8 @@ Report every finding that holds up in `report.md`, however small. Choosing what 
 
 A valid point outside the PR's scope (throttling, pagination, cleanup jobs that the backlog already plans) is offered as a follow-up ticket, not posted as a blocker: authors often answer these by filing a ticket and merging.
 
+A one-line cleanup in a file the PR already touches may still be posted inline, opened with "Not related to your changes, but..." and ended with "Not blocking." Anything bigger stays a follow-up.
+
 ## How a comment reads
 
 Good review comments share a shape:
