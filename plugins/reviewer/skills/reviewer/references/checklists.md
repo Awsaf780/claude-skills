@@ -17,6 +17,20 @@ What to look for, by area. Every item came from a real review. They are examples
 - **Description vs code.** What the description promises (protected data, unchanged URL, e2e passed) and what the diff does. An e2e spec "not run yet" must run before merge.
 - **Coupled environments.** A build for dev that synthesizes or validates prod too fails on prod-only errors; let each pipeline build its own environment.
 
+## Placement and API surface
+
+- **App behaviour stays in the app.** A library or shared package gains an option only when more than one consumer needs it. Behaviour only one app needs, and that the app can build through the library's public handles, stays in the app, so it ships without a library release and the library's other users never carry it.
+- **Code lives in the package that matches what it does.** A tool that doesn't touch the infra code gets its own folder outside the infra package; generic code and runtime-specific code (Lambda, Node) are separate packages, so other apps don't bundle the runtime part.
+- **A state change lives with the state it changes.** A reducer in a UI store that rewrites shared domain state belongs in the domain module, or in a listener.
+- **New state changes go in the shared domain** when other callers (the backend, AI tools, a public API) could need them; the UI adds only what is UI state.
+- **Reuse the selector or helper that already exists, everywhere in the file.** A hand-filtered loop next to an existing `selectVisibleItems` is a finding, and so are sibling selectors in the same file that still read the unfiltered data.
+- **Reuse the workflow that already exists.** A new CI workflow beside the current one needs a reason.
+- **Question every new prop, flag and optional parameter.** Ask "doesn't every caller want this?"; if yes, drop the prop. An optional parameter whose purpose isn't clear at the call site reads better as a named action (`openSettingsPanel`).
+- **A new type cast asks why.** `as unknown as X` added to existing code means something changed upstream; find what, and fix the type there.
+- **Complexity needs a demonstrated problem.** Defensive code for a case nobody has seen (a loop over every descendant, a save-and-restore map) gets "did you see this happen?", and the author tries without it first.
+- **A new tool gets a script entry** (`package.json`, `Makefile`), so everyone runs it the same way.
+- **Base the PR where it lands fastest.** A PR stacked on an unmerged branch it doesn't need waits for that branch; ask to rebase onto the main line.
+
 ## Backend and API
 
 - **Every error path ends in the API's error shape.** Errors that escape the handler (throttling, a network error, a config read that throws) reach the client as the gateway's generic 500, with nothing logged.
@@ -117,6 +131,16 @@ What to look for, by area. Every item came from a real review. They are examples
 - **Reproducing a failure that only happens on the build host**: a plain container usually passes. A container whose seccomp profile refuses the syscall the tool needs (e.g. `seccomp` with `errnoRet: 22`) can reproduce it. Prove the reproduction fails with the same error before testing the fix in it.
 - **Skips decided by a side effect**: a test that skips when a tool "looks unavailable" (`docker info` fails) turns into a failure the day the tool starts working. Ask for an explicit condition such as the environment (`CODEBUILD_BUILD_ID`, `GITHUB_ACTIONS`), and make the side where the test is required fail loudly.
 - **Recurring pipeline failures**: a third patch for the same class (per-step cache or tracking switches, say) asks for a class-wide switch plus a guard test.
+
+## Product behaviour
+
+Read when the diff changes what a user sees or does.
+
+- **Same behaviour across kinds.** When one kind of item (map markers) gets a new behaviour, check every sibling kind (shapes, regions): fade all or none, selectable in the same modes.
+- **Walk the user flows in order.** Write three to five concrete sequences a user would do and run each: create A, start B, finish B on top of A; switch tools mid-action; Escape; undo. The bugs are in the order, not in the single action.
+- **Behaviour nobody asked for.** An extra (a fade, an animation) that no ticket or user asked for gets flagged: is it wanted, and is it consistent?
+- **How it is used end to end.** For a design or ADR, ask how the thing reaches the user: which template renders it, how multi-language data maps onto it, whether the client polls or gets pushed.
+- **Try it when a preview exists** (a branch preview or a local run), and paste the exact output when it fails.
 
 ## Tests
 
